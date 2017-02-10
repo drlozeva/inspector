@@ -1,10 +1,9 @@
 module Inspector
-
-  module IP_header
-
-    def check_sum_header(pkt)
+  # something
+  module IpHeader
+    def check_sum_header
       sum = bytes[24..25]
-      sum.map { |b| format("%x", b) }.join()
+      sum.map { |b| format('%x', b) }.join
     end
 
     def inspect_num(x)
@@ -23,18 +22,17 @@ module Inspector
         inspect_num(sum)
         sum -= (carry_detector - 1)
         inspect_num(sum)
-        puts
       end
       sum
     end
 
     def my_check(bytes)
-      words = bytes[14..33].
-        map { |b| format('%08b', b) }.
-        each_slice(2).
-        map { |a, b| "#{a}#{b}".to_i(2) }
+      words = bytes[14..33]
+              .map { |b| format('%08b', b) }
+              .each_slice(2)
+              .map { |a, b| "#{a}#{b}".to_i(2) }
 
-      sum = words.inject(0) { |a, e| bin_add(a, e) }
+      sum = words.inject(0) { |acc, elem| bin_add(acc, elem) }
       complement = sum ^ (2**16 - 1)
 
       puts '------------'

@@ -1,6 +1,6 @@
 module Inspector
+  # some comment
   class RuleMatcher
-
     attr_reader :bytes, :rule
 
     def initialize(bytes, rule)
@@ -12,9 +12,9 @@ module Inspector
       return false unless rule['layer2']['ethertype']
 
       case rule['layer2']['ethertype']
-      when 'ipv4' then return bytes[12] == 0x08 && bytes[13] == 0x00
-      when 'ipv6' then return bytes[12] == 0x09 && bytes[13] == 0x00
-      else fail "Unknown ethertype: #{rule['layer2']['ethertype']}"
+      when 'ipv4' then return bytes[12] == 0x08 && bytes[13].zero?
+      when 'ipv6' then return bytes[12] == 0x09 && bytes[13].zero?
+      else raise "Unknown ethertype: #{rule['layer2']['ethertype']}"
       end
     end
 
@@ -24,16 +24,15 @@ module Inspector
       case rule['layer3']['protocol']
       when 'tcp' then return bytes[23] == 0x06
       when 'udp' then return bytes[23] == 0x11
-      else fail "Unknown protocol: #{rule['layer3']['protocol']}"
+      else raise "Unknown protocol: #{rule['layer3']['protocol']}"
       end
     end
 
     def flags?
-      if rule['layer4']['flags']
-        bytes_num = bytes[46..47].reduce("0x") { |a, e| a + format("%x", e) }.to_i(16)
-        matched_flags = match_flags
-        return bytes_num & matched_flags == matched_flags
-      end
+      return false unless rule['layer4']['flags']
+      bytes_num = bytes[46..47].reduce('0x') { |acc, elem| acc + format('%x', elem) }.to_i(16)
+      matched_flags = match_flags
+      bytes_num & matched_flags == matched_flags
     end
 
     protected
@@ -50,12 +49,10 @@ module Inspector
         when 'URG' then flag_mask |= 32
         when 'ECE' then flag_mask |= 64
         when 'CWR' then flag_mask |= 128
-        else fail "Unknown flag: #{flag}"
+        else raise "Unknown flag: #{flag}"
         end
       end
       flag_mask
     end
   end
 end
-
-

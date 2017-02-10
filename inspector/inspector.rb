@@ -3,11 +3,12 @@ require 'yaml'
 require_relative 'rule_matcher'
 
 module Inspector
+  # somecomment
   class Inspector
     def initialize(rules_file:, output_file:)
       @rules = load_rules(rules_file)
-      @output_file = File.open(output_file, "w")
-      @output_file.puts "#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}"
+      @output_file = File.open(output_file, 'w')
+      @output_file.puts Time.now.to_s
     end
 
     def parse(path)
@@ -15,35 +16,33 @@ module Inspector
 
       cap.loop do |_, pkt|
         bytes = pkt.body.each_byte.to_a
-
-
-        @rules.each do |rule|
-          if match_rule?(bytes, rule)
-            src_ip = bytes[26..29].map { |b| format("%d", b) }.join(".")
-            dst_ip = bytes[30..33].map { |b| format("%d", b) }.join(".")
-            @output_file.puts("Rule #{rule['name']} match on packet with #{src_ip} -> #{dst_ip}")
-          end
-        end
+        check_rules(bytes)
       end
-
       @output_file.close
+    end
+
+    def check_rules(bytes)
+      @rules.each do |rule|
+        next unless match_rule?(bytes, rule)
+        src_ip = bytes[26..29].map { |b| format('%d', b) }.join('.')
+        dst_ip = bytes[30..33].map { |b| format('%d', b) }.join('.')
+        @output_file.puts("Rule #{rule['name']} match on packet with #{src_ip} -> #{dst_ip}")
+      end
     end
 
     protected
 
     def match_rule?(bytes, rule)
       matcher = RuleMatcher.new(bytes, rule)
-       results = [matcher.ethertype?, matcher.protocol?, matcher.flags?]
-      p results
-      return results.all? { |r| r == true }
-      # return matcher.ethertype? &&
-      #   matcher.protocol? &&
-      #   matcher.flags?
+      results = [matcher.ethertype?, matcher.protocol?, matcher.flags?]
+      return matcher.ethertype? &&
+        matcher.protocol? &&
+        matcher.flags?
     end
 
     def load_rules(file)
       rules = YAML.load_file(file)
-      return rules
+      rules
     end
   end
 end
