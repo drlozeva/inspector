@@ -9,7 +9,7 @@ module Inspector
     end
 
     def ethertype?
-      return false unless rule['layer2']['ethertype']
+      return true unless rule['layer2'] && rule['layer2']['ethertype']
 
       case rule['layer2']['ethertype']
       when 'ipv4' then return bytes[12] == 0x08 && bytes[13].zero?
@@ -19,7 +19,7 @@ module Inspector
     end
 
     def protocol?
-      return false unless rule['layer3']['protocol']
+      return true unless rule['layer3'] && rule['layer3']['protocol']
 
       case rule['layer3']['protocol']
       when 'tcp' then return bytes[23] == 0x06
@@ -29,7 +29,7 @@ module Inspector
     end
 
     def flags?
-      return false unless rule['layer4']['flags']
+      return true unless rule['layer4'] && rule['layer4']['flags']
       bytes_num = bytes[46..47].reduce('0x') { |acc, elem| acc + format('%x', elem) }.to_i(16)
       matched_flags = match_flags
       bytes_num & matched_flags == matched_flags
