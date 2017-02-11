@@ -3,13 +3,10 @@ require 'pathname'
 require 'fileutils'
 
 root_dir = Pathname.new(__FILE__).dirname.dirname.dirname
-
-
 require root_dir.join('inspector/inspector.rb')
 
 RSpec.describe('Inspector') do
   it 'detects christmas packets' do
-    root_dir = Pathname.new(__FILE__).dirname.dirname.dirname
     rules_file = root_dir.join('spec', 'rules', 'rules_xmas.yml')
     input_file = root_dir.join('spec', 'input', 'christmas_packets.pcap')
     output_file = root_dir.join('spec', 'output', 'christmas_packets.txt')

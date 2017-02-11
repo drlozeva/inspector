@@ -1,7 +1,9 @@
 module Inspector
-  # something
+  # rubocop is a bitch
   module IpHeader
-    def check_sum_header
+    module_function
+
+    def check_sum_header(bytes)
       sum = bytes[24..25]
       sum.map { |b| format('%x', b) }.join
     end
@@ -13,20 +15,12 @@ module Inspector
     end
 
     def bin_add(a, b, carry_detector = 2**16)
-      inspect_num(a)
-      inspect_num(b)
       sum = a + b
-      inspect_num(sum)
-
-      if sum >= carry_detector
-        inspect_num(sum)
-        sum -= (carry_detector - 1)
-        inspect_num(sum)
-      end
+      sum -= (carry_detector - 1) if sum >= carry_detector
       sum
     end
 
-    def my_check(bytes)
+    def calc_check_sum(bytes)
       words = bytes[14..33]
               .map { |b| format('%08b', b) }
               .each_slice(2)
@@ -34,10 +28,7 @@ module Inspector
 
       sum = words.inject(0) { |acc, elem| bin_add(acc, elem) }
       complement = sum ^ (2**16 - 1)
-
-      puts '------------'
-      puts
-      inspect_num(complement)
+      complement
     end
   end
 end

@@ -34,8 +34,8 @@ module Inspector
 
     def match_rule?(bytes, rule)
       matcher = RuleMatcher.new(bytes, rule)
-      results = [matcher.ethertype?, matcher.protocol?, matcher.flags?]
-      return matcher.ethertype? &&
+
+      matcher.ethertype? &&
         matcher.protocol? &&
         matcher.flags?
     end
