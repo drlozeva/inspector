@@ -3,7 +3,7 @@ require 'yaml'
 require_relative 'rule_matcher'
 
 module Inspector
-  # somecomment
+  # class Inspector inspects the rules
   class Inspector
     def initialize(rules_file:, output_file:)
       @rules = load_rules(rules_file)

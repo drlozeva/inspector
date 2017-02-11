@@ -1,0 +1,28 @@
+---
+# - name: "Christmas TCP packets"
+#   rate: 1
+#   layer2:
+#     ethertype: ipv4
+#   layer3:
+#     protocol: tcp
+#   layer4:
+#     flags: [FIN, URG, PSH]
+
+- name: "Null TCP packets"
+  rate: 1
+  layer2:
+    ethertype: ipv4
+  layer3:
+    protocol: tcp
+  layer4:
+    flags: []
+
+# - name: "TCP SYN scan"
+#   rate: 1000
+#   group_by: layer3.source_ip
+#   layer2:
+#     ethertype: ipv4
+#   layer3:
+#     protocol: tcp
+#   layer4:
+#     flags: [SYN]
