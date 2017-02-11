@@ -10,4 +10,6 @@
     inspector/ip_header.rb
     inspector/rule_matcher.rb
   )
+
+  s.add_dependency 'ffi-pcap', '0.2.1'
 end

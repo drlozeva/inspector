@@ -1,0 +1,24 @@
+PATH
+  remote: .
+  specs:
+    inspector (0.0.1)
+      ffi-pcap (= 0.2.1)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ffi (1.9.17)
+    ffi-pcap (0.2.1)
+      ffi (~> 1.0)
+      ffi_dry (~> 0.1.12)
+    ffi_dry (0.1.12)
+      ffi (>= 0.5.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  inspector!
+
+BUNDLED WITH
+   1.13.6
